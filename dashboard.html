@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Engineering Nexus Hub</title>
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body class="dashboard-body">
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="index.html" class="navbar-brand">
+            <img src="assets/images/logo.svg" alt="ENH">
+            <span class="hide-mobile">Engineering Nexus Hub</span>
+        </a>
+        
+        <div class="navbar-links hide-mobile">
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="pages/courses/courses.html" class="nav-link">Courses</a>
+            <a href="pages/tools.html" class="nav-link">Tools</a>
+            <a href="pages/jobs/jobs.html" class="nav-link">Jobs</a>
+        </div>
+
+        <div class="navbar-actions">
+            <div class="search-box hide-mobile">
+                <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+                </svg>
+                <input type="text" class="search-input" placeholder="Search...">
+            </div>
+            
+            <button class="btn btn-icon btn-ghost" onclick="toggleTheme()" aria-label="Toggle theme">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                </svg>
+            </button>
+
+            <button class="btn btn-icon btn-ghost" id="notificationBtn" style="position: relative;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0"/>
+                </svg>
+                <span class="notification-badge" style="position: absolute; top: -2px; right: -2px; background: var(--danger); color: white; font-size: 10px; width: 16px; height: 16px; border-radius: 50%; display: none; align-items: center; justify-content: center;">0</span>
+            </button>
+
+            <div class="dropdown" style="position: relative;">
+                <div class="dropdown-menu" style="width: 320px; right: 0; left: auto; max-height: 400px; overflow-y: auto;" id="notificationsDropdown">
+                    <div class="flex justify-between items-center" style="padding: 12px; border-bottom: 1px solid var(--border-light);">
+                        <h4>Notifications</h4>
+                        <button class="btn btn-ghost btn-sm" onclick="markAllNotificationsRead()">Mark all read</button>
+                    </div>
+                    <div id="notificationsList" style="max-height: 300px; overflow-y: auto;">
+                        <p class="text-center text-muted p-3">No notifications</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dropdown">
+                <button class="btn btn-ghost flex items-center gap-2" id="userMenuBtn">
+                    <div class="avatar avatar-sm" id="userAvatar">U</div>
+                    <span class="hide-mobile" id="userDisplayName">User</span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M6 9l6 6 6-6"/>
+                    </svg>
+                </button>
+                <div class="dropdown-menu">
+                    <a href="pages/courses/my-courses.html" class="dropdown-item">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+                        </svg>
+                        My Courses
+                    </a>
+                    <a href="pages/jobs/my-applications.html" class="dropdown-item">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+                        </svg>
+                        My Applications
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <button class="dropdown-item" onclick="logout()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>
+                        </svg>
+                        Logout
+                    </button>
+                </div>
+            </div>
+
+            <button class="btn btn-icon btn-ghost mobile-menu-btn hide-mobile" style="display: none;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 12h18M3 6h18M3 18h18"/>
+                </svg>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-section">
+            <div class="sidebar-title">Menu</div>
+            <div class="sidebar-menu">
+                <a href="dashboard.html" class="sidebar-link active">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+                    </svg>
+                    Dashboard
+                </a>
+                <a href="pages/courses/courses.html" class="sidebar-link">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+                    </svg>
+                    Courses
+                </a>
+                <a href="pages/tools.html" class="sidebar-link">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 9h6M9 13h6M9 17h4"/>
+                    </svg>
+                    Tools
+                </a>
+                <a href="pages/resources.html" class="sidebar-link">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                            <polyline points="14 2 14 8 20 8"/>
+                        </svg>
+                        Resources
+                    </a>
+                    <a href="pages/blog/blog.html" class="sidebar-link">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                        </svg>
+                        Blog
+                    </a>
+                    <a href="pages/jobs/jobs.html" class="sidebar-link">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+                        </svg>
+                        Jobs
+                    </a>
+                    <a href="pages/community/forum.html" class="sidebar-link">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                        </svg>
+                        Community
+                    </a>
+<a href="pages/settings.html" class="sidebar-link">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                        </svg>
+                        Settings
+                    </a>
+                    <a href="pages/settings.html" class="sidebar-link">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                        </svg>
+                        Settings
+                    </a>
+            </div>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-title">Quick Access</div>
+            <div class="sidebar-menu">
+                <a href="#" class="sidebar-link">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+                    </svg>
+                    Bookmarks
+                </a>
+                <a href="#" class="sidebar-link">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                    </svg>
+                    Settings
+                </a>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-wrapper">
+        <div class="content">
+            <!-- Welcome Section -->
+            <div class="flex justify-between items-center mb-4">
+                <div>
+                    <h1 id="welcomeMessage">Welcome back!</h1>
+                    <p class="text-secondary">Continue your learning journey</p>
+                </div>
+                <button class="btn btn-primary" onclick="openModal('learningPathModal')">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                    </svg>
+                    Learning Path
+                </button>
+            </div>
+
+            <!-- Learning Path Selection Modal -->
+            <div class="modal-overlay" id="learningPathModal">
+                <div class="modal" style="max-width: 500px;">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Select Your Learning Path</h3>
+                        <button class="modal-close" onclick="closeModal('learningPathModal')">×</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label class="form-label">Engineering Field</label>
+                            <select id="pathField" class="form-select">
+                                <option value="electrical">⚡ Electrical Engineering</option>
+                                <option value="mechanical">⚙️ Mechanical Engineering</option>
+                                <option value="civil">🏗️ Civil Engineering</option>
+                                <option value="software">💻 Software Engineering</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Current Level</label>
+                            <select id="pathLevel" class="form-select">
+                                <option value="beginner">🌱 Beginner - Just starting out</option>
+                                <option value="intermediate">📚 Intermediate - Some experience</option>
+                                <option value="advanced">🎓 Advanced - Expert level</option>
+                            </select>
+                        </div>
+                        <div id="pathPreview" class="card mt-3" style="padding: 16px; display: none;">
+                            <h4>Your Path:</h4>
+                            <p class="text-secondary mt-1" id="pathSummary"></p>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-ghost" onclick="closeModal('learningPathModal')">Cancel</button>
+                        <button class="btn btn-primary" onclick="saveLearningPath()">Save Path</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="grid grid-4 mb-4">
+                <div class="stats-card">
+                    <div class="stats-icon primary">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+                        </svg>
+                    </div>
+                    <div class="stats-info">
+                        <h4>12</h4>
+                        <p>Enrolled Courses</p>
+                    </div>
+                </div>
+
+                <div class="stats-card">
+                    <div class="stats-icon success">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+                        </svg>
+                    </div>
+                    <div class="stats-info">
+                        <h4>8</h4>
+                        <p>Completed</p>
+                    </div>
+                </div>
+
+                <div class="stats-card">
+                    <div class="stats-icon warning">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+                        </svg>
+                    </div>
+                    <div class="stats-info">
+                        <h4>5</h4>
+                        <p>Applications</p>
+                    </div>
+                </div>
+
+                <div class="stats-card">
+                    <div class="stats-icon danger">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 10h8M8 14h4"/>
+                        </svg>
+                    </div>
+                    <div class="stats-info">
+                        <h4>15</h4>
+                        <p>Questions</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Continue Learning -->
+            <div class="card mb-4">
+                <div class="card-header flex justify-between items-center">
+                    <h3>Continue Learning</h3>
+                    <a href="pages/courses/courses.html" class="btn btn-ghost btn-sm">View All</a>
+                </div>
+                <div class="card-body">
+                    <div class="grid grid-3" id="continueLearning">
+                        <!-- Loaded dynamically -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity & Jobs -->
+            <div class="grid grid-2">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Recent Activity</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="flex flex-col gap-3" id="recentActivities">
+                            <!-- Activities loaded dynamically -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Recommended Jobs</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="flex flex-col gap-3" id="recommendedJobs">
+                            <!-- Jobs loaded dynamically -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- AI Assistant Modal -->
+    <div class="modal-overlay" id="aiAssistantModal">
+        <div class="modal" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3 class="modal-title">AI Engineering Assistant</h3>
+                <button class="modal-close" onclick="closeModal('aiAssistantModal')">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 6L6 18M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body" style="height: 400px; overflow-y: auto;">
+                <div class="flex flex-col gap-3" id="aiChat">
+                    <div class="flex gap-3">
+                        <div class="avatar avatar-sm" style="flex-shrink: 0;">AI</div>
+                        <div style="background: var(--surface-light); padding: var(--space-md); border-radius: var(--radius); max-width: 80%;">
+                            <p>Hello! I'm your AI Engineering Assistant. How can I help you today?</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="flex gap-2 w-full">
+                    <input type="text" class="form-input" id="aiInput" placeholder="Ask a question...">
+                    <button class="btn btn-primary" onclick="sendToAI()">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        // Initialize notifications
+        document.addEventListener('DOMContentLoaded', () => {
+            updateNotificationBadge();
+            
+            const notifBtn = document.getElementById('notificationBtn');
+            notifBtn.addEventListener('click', () => {
+                const dropdown = notifBtn.parentElement;
+                dropdown.classList.toggle('active');
+                showNotifications();
+            });
+        });
+
+        function sendToAI() {
+            const input = document.getElementById('aiInput');
+            const message = input.value.trim();
+            if (!message) return;
+
+            const chat = document.getElementById('aiChat');
+            chat.innerHTML += `
+                <div class="flex gap-3" style="flex-direction: row-reverse;">
+                    <div class="avatar avatar-sm" style="flex-shrink: 0;">JD</div>
+                    <div style="background: var(--primary-light); padding: var(--space-md); border-radius: var(--radius); max-width: 80%;">
+                        <p>${message}</p>
+                    </div>
+                </div>
+                <div class="flex gap-3">
+                    <div class="avatar avatar-sm" style="flex-shrink: 0;">AI</div>
+                    <div style="background: var(--surface-light); padding: var(--space-md); border-radius: var(--radius); max-width: 80%;">
+                        <p>I'm analyzing your question about "${message}". Let me help you with that...</p>
+                    </div>
+                </div>
+            `;
+
+            input.value = '';
+            chat.parentElement.scrollTop = chat.parentElement.scrollHeight;
+        }
+
+        document.getElementById('aiInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendToAI();
+        });
+
+// Update welcome message with user name
+        document.addEventListener('DOMContentLoaded', () => {
+            const user = window.AuthAPI?.getUser();
+            if (!user) {
+                window.location.href = 'pages/auth/login.html';
+                return;
+            }
+            
+            // Update welcome message
+            const welcomeEl = document.getElementById('welcomeMessage');
+            if (welcomeEl) {
+                welcomeEl.textContent = `Welcome back, ${user.name.split(' ')[0]}!`;
+            }
+            
+            // Update user name in navbar
+            const userDisplayName = document.getElementById('userDisplayName');
+            if (userDisplayName) {
+                userDisplayName.textContent = user.name;
+            }
+            
+            // Update avatar - show user photo or initials
+            const userAvatar = document.getElementById('userAvatar');
+            if (userAvatar) {
+                if (user.avatar) {
+                    userAvatar.innerHTML = `<img src="${user.avatar}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+                } else {
+                    const initials = user.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+                    userAvatar.textContent = initials;
+                }
+            }
+            
+            // Load real stats
+            loadUserStats();
+            
+            // Load learning path
+            loadLearningPath();
+            
+            // Initialize demo activities and render
+            initDemoActivities();
+            if (window.renderRecentActivities) {
+                renderRecentActivities();
+            }
+            
+            // Load recommended jobs
+            loadRecommendedJobs();
+            
+            // Load continue learning
+            loadContinueLearning();
+        });
+        
+        // Load real user stats
+        function loadUserStats() {
+            const user = window.AuthAPI?.getUser();
+            if (!user) return;
+            
+            const enrollments = JSON.parse(localStorage.getItem('enh_enrollments') || '[]');
+            const userEnrollments = enrollments.filter(e => e.userId === user.id);
+            const completed = userEnrollments.filter(e => e.progress >= 100).length;
+            
+            const applications = JSON.parse(localStorage.getItem('enh_applications') || '[]');
+            const userApps = applications.filter(a => a.userId === user.id);
+            
+            const questions = JSON.parse(localStorage.getItem('enh_questions') || '[]');
+            const userQuestions = questions.filter(q => q.userId === user.id);
+            
+            // Update stats cards
+            const statsCards = document.querySelectorAll('.stats-card');
+            if (statsCards[0]) statsCards[0].querySelector('h4').textContent = userEnrollments.length;
+            if (statsCards[1]) statsCards[1].querySelector('h4').textContent = completed;
+            if (statsCards[2]) statsCards[2].querySelector('h4').textContent = userApps.length;
+            if (statsCards[3]) statsCards[3].querySelector('h4').textContent = userQuestions.length;
+        }
+
+        // Load continue learning from localStorage
+        function loadContinueLearning() {
+            const container = document.getElementById('continueLearning');
+            if (!container) return;
+            
+            const user = window.AuthAPI?.getUser();
+            
+            if (!user) {
+                // Show login prompt
+                container.innerHTML = `
+                    <div class="col-span-3 text-center p-4">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" style="margin: 0 auto; display: block;">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+                        </svg>
+                        <h4 class="mt-3">Please login to track progress</h4>
+                        <p class="text-secondary mt-2">Login to save your learning progress and see your enrolled courses.</p>
+                        <a href="pages/auth/login.html" class="btn btn-primary mt-3">Login</a>
+                    </div>
+                `;
+                return;
+            }
+            
+            const enrollments = JSON.parse(localStorage.getItem('enh_enrollments') || '[]');
+            const userEnrollments = enrollments.filter(e => e.userId === user.id && e.progress > 0 && e.progress < 100);
+            
+            if (userEnrollments.length === 0) {
+                // Show sample courses for new users
+                container.innerHTML = `
+                    <div class="card course-card" onclick="window.location.href='pages/courses/courses.html'">
+                        <div style="height: 120px; background: linear-gradient(135deg, #10B981, #059669); display: flex; align-items: center; justify-content: center;">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="white"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                        </div>
+                        <div class="course-content">
+                            <span class="course-field">Electrical</span>
+                            <h4 class="course-title">Circuit Analysis Fundamentals</h4>
+                            <div class="progress mt-2" style="height: 6px;"><div class="progress-bar" style="width: 0%;"></div></div>
+                            <span class="text-sm text-muted">Start learning →</span>
+                        </div>
+                    </div>
+                    <div class="card course-card" onclick="window.location.href='pages/courses/courses.html'">
+                        <div style="height: 120px; background: linear-gradient(135deg, #EF4444, #DC2626); display: flex; align-items: center; justify-content: center;">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="white"><circle cx="12" cy="12" r="3"/><path d="M12 1v6M12 17v6M4.22 4.22l4.24 4.24M15.54 15.54l4.24 4.24"/></svg>
+                        </div>
+                        <div class="course-content">
+                            <span class="course-field">Mechanical</span>
+                            <h4 class="course-title">Thermodynamics Basics</h4>
+                            <div class="progress mt-2" style="height: 6px;"><div class="progress-bar" style="width: 0%;"></div></div>
+                            <span class="text-sm text-muted">Start learning →</span>
+                        </div>
+                    </div>
+                    <div class="card course-card" onclick="window.location.href='pages/courses/courses.html'">
+                        <div style="height: 120px; background: linear-gradient(135deg, #F59E0B, #D97706); display: flex; align-items: center; justify-content: center;">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="white"><path d="M3 21h18M5 21V7l8-4 8 4v14M9 21v-6h6v6"/></svg>
+                        </div>
+                        <div class="course-content">
+                            <span class="course-field">Civil</span>
+                            <h4 class="course-title">Structural Engineering</h4>
+                            <div class="progress mt-2" style="height: 6px;"><div class="progress-bar" style="width: 0%;"></div></div>
+                            <span class="text-sm text-muted">Start learning →</span>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = userEnrollments.slice(0, 3).map(e => `
+                <div class="card course-card" onclick="window.location.href='pages/courses/courses.html'">
+                    <div style="height: 100px; background: linear-gradient(135deg, var(--primary-light), var(--accent-light)); display: flex; align-items: center; justify-content: center;">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2">
+                            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+                        </svg>
+                    </div>
+                    <div class="course-content">
+                        <span class="course-field">${e.courseId}</span>
+                        <h4 class="course-title">Course #${e.courseId}</h4>
+                        <div class="progress mt-2" style="height: 6px;">
+                            <div class="progress-bar" style="width: ${e.progress}%;"></div>
+                        </div>
+                        <span class="text-sm">${e.progress}% complete</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Load recommended jobs from localStorage
+        function loadRecommendedJobs() {
+            const container = document.getElementById('recommendedJobs');
+            if (!container) return;
+            
+            let jobs = JSON.parse(localStorage.getItem('enh_jobs') || '[]');
+            
+            // Add demo jobs if none exist
+            if (jobs.length === 0) {
+                jobs = [
+                    { id: 1, title: 'Junior Electrical Engineer', company: 'TechCorp Inc.', jobType: 'Full-time', location: 'Remote', salary: '$60k-80k' },
+                    { id: 2, title: 'Structural Engineer', company: 'ArchEngineers', jobType: 'Full-time', location: 'On-site', salary: '$70k-90k' },
+                    { id: 3, title: 'Mechanical Design Intern', company: 'MegaEng', jobType: 'Internship', location: 'Hybrid', salary: '$20/hr' }
+                ];
+            }
+            
+            // Take first 3 jobs
+            const topJobs = jobs.slice(0, 3);
+            
+            container.innerHTML = topJobs.map(job => `
+                <a href="pages/jobs/jobs.html" class="job-card">
+                    <div class="job-logo">${job.company.substring(0, 2).toUpperCase()}</div>
+                    <div class="job-content">
+                        <h4 class="job-title">${job.title}</h4>
+                        <p class="job-company">${job.company}</p>
+                        <div class="job-tags">
+                            <span class="badge badge-primary">${job.jobType || 'Full-time'}</span>
+                            <span class="badge badge-secondary">${job.location || 'Remote'}</span>
+                        </div>
+                    </div>
+                </a>
+            `).join('');
+        }
+
+        function loadLearningPath() {
+            const path = window.LearningSystem?.getUserLearningPath();
+            if (path) {
+                document.getElementById('pathField').value = path.field;
+                document.getElementById('pathLevel').value = path.level;
+            }
+        }
+
+        function updatePathPreview() {
+            const field = document.getElementById('pathField').value;
+            const level = document.getElementById('pathLevel').value;
+            
+            const fieldNames = {
+                electrical: 'Electrical Engineering',
+                mechanical: 'Mechanical Engineering',
+                civil: 'Civil Engineering',
+                software: 'Software Engineering'
+            };
+            
+            const levelNames = {
+                beginner: 'Beginner',
+                intermediate: 'Intermediate',
+                advanced: 'Advanced'
+            };
+            
+            document.getElementById('pathSummary').textContent = 
+                `${levelNames[level]} - ${fieldNames[field]}`;
+            document.getElementById('pathPreview').style.display = 'block';
+        }
+
+        function saveLearningPath() {
+            const field = document.getElementById('pathField').value;
+            const level = document.getElementById('pathLevel').value;
+            
+            window.LearningSystem?.saveLearningPath(field, level);
+            window.showToast('Learning path updated!', 'success');
+            closeModal('learningPathModal');
+            
+            // Redirect to courses
+            window.location.href = 'pages/courses/courses.html';
+        }
+    </script>
+</body>
+</html>
